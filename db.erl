@@ -9,10 +9,12 @@ put(K, V, Db) ->
 		_Else -> {error, 'Key already exists'}
 	end.
 
-delete(K, Db) -> [{Xk , V} || {Xk , V} <- Db, Xk /= K ].
+delete(K, Db) -> lists:keydelete(K, 1, Db).
 
-get(_, []) -> {error, 'Key not found'};
-get(K, [{K,V}|_]) -> V;
-get(K, [_|T]) -> get(K, T).
+find(V, Db) -> lists:filter(fun({_,V1}) -> V=:=V1 end, Db).
 
-find(V, Db) -> [K || {K, Vx} <- Db, Vx =:= V].
+get(K, L) ->
+	case lists:keyfind(K,1,L) of
+		{_, Value} -> Value;
+		_ -> {error, 'Key not found'}
+	end.
